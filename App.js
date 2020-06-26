@@ -19,7 +19,7 @@ export default () => {
 
   useEffect(() => {
     socket.onopen = () => socket.send(JSON.stringify({ type: 'server', payload: 'Parabéns, você se conectou ao chat!' }));
-    socket.onmessage = ({ data }) => setMessages((oldMessages) => [...oldMessages, JSON.parse(data)])
+    socket.onmessage = ({ data }) => setMessages((oldMessages) => [JSON.parse(data), ...oldMessages])
   }, [])
 
   const renderItem = ({ item, index }) => {
@@ -47,7 +47,7 @@ export default () => {
   }
 
   const sendMessage = () => {
-    setMessages((oldMessages) => [...oldMessages, { type: 'user', payload: userMessage }])
+    setMessages((oldMessages) => [{ type: 'user', payload: userMessage }, ...oldMessages])
     socket.send(JSON.stringify({ type: 'server', payload: userMessage }))
     setUserMessage('')
   }
@@ -67,7 +67,7 @@ export default () => {
         ref={flatList}
         style={styles.chat}
         renderItem={renderItem}
-        onContentSizeChange={() => setInterval(() => flatList.current.scrollToEnd(), 1100)}
+        inverted
         data={messages}
         contentContainerStyle={{ paddingTop: 20, paddingHorizontal: 20 }}
         keyExtractor={(item, index) => index.toString()}
